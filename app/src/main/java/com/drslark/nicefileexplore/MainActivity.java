@@ -3,10 +3,7 @@
  */
 package com.drslark.nicefileexplore;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 public class MainActivity extends TitleControlBaseActivity {
 
@@ -15,6 +12,5 @@ public class MainActivity extends TitleControlBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-
 
 }

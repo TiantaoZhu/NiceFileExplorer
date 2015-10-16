@@ -8,6 +8,6 @@
     <version value="1" />
 
     <list>
-        <mapping class = "com.drslark.nicefileexplore.model.File"/>
+        <mapping class = "com.drslark.nicefileexplore.model.FileInfo"/>
     </list>
 </litepal>

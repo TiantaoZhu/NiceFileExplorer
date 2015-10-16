@@ -19,4 +19,9 @@
     <string name="file_tree">文件目录</string>
     <string name="safebox">保险柜</string>
     <string name="tags">自定义标签</string>
+    <string name="dialog_select_type">请选择文件类型</string>
+    <string name="dialog_type_text">文本</string>
+    <string name="dialog_type_audio">音频</string>
+    <string name="dialog_type_video">视频</string>
+    <string name="dialog_type_image">图片</string>
 </resources>

@@ -26,4 +26,5 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.0.0'
     compile files('libs/litepal-1.2.1-src.jar')
+    compile files('libs/rxjava-1.0.14.jar')
 }

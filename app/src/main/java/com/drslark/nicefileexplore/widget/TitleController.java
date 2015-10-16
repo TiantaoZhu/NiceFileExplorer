@@ -77,4 +77,9 @@ public class TitleController {
     public ImageView getSearchIcon() {
         return searchIcon;
     }
+    public void hide(boolean show) {
+        if (titleBar != null) {
+            titleBar.setVisibility(show?View.VISIBLE:View.GONE);
+        }
+    }
 }

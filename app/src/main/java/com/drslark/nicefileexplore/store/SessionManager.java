@@ -16,7 +16,6 @@ public class SessionManager {
     public static final String PREF_KEY_TIME = "time";
     public static final String PREF_KEY_USERNAME = "username";
     public static final String PREF_KEY_USERNAMEE = "usernameE";
-    public static final String PREF_KEY_UUID = "uuid";
 
     private static SessionManager sInstance;
     private Context context;
@@ -32,27 +31,22 @@ public class SessionManager {
     }
 
     private User user;
-    public User getUser() {
 
-    }
 
     public static Session getSession(final Context context) {
-        if (context == null) {
-            return new Session(null, null, -1);
-        }
+
         SharedPreferences sessionPref = context.getSharedPreferences(PREF_SESSION, 0);
         String username = sessionPref.getString(PREF_KEY_USERNAME, "");
         String usernameE = sessionPref.getString(PREF_KEY_USERNAMEE, "");
         // String uuid = sessionPref.getString(PREF_KEY_UUID, "");
         long time = sessionPref.getLong(PREF_KEY_TIME, -1);
-        return new Session(username, usernameE, time);
+        return null;
     }
 
     public static void setSession(final Context context, Session session) {
         SharedPreferences sessionPref = context.getSharedPreferences(PREF_SESSION, 0);
         SharedPreferences.Editor editor = sessionPref.edit();
-        editor.putString(PREF_KEY_USERNAME, session.username);
-        editor.putString(PREF_KEY_USERNAMEE, session.usernameE);
+
         // editor.putString(PREF_KEY_UUID, session.uuid);
         editor.putLong(PREF_KEY_TIME, session.time);
         editor.commit();
@@ -63,6 +57,11 @@ public class SessionManager {
         SharedPreferences.Editor editor = sessionPref.edit();
         editor.clear();
         editor.commit();
+    }
+
+    public class Session {
+        public long userid;
+        public long time;
     }
 
 }
