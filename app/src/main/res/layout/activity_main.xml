@@ -1,0 +1,155 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <include layout="@layout/title_bar"/>
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="150dp"
+                  android:visibility="gone"
+                  android:orientation="vertical"
+                  android:id="@+id/note_item_content"/>
+    <include layout="@layout/category_layout"/>
+    <include layout="@layout/fileandsafebox_layout"/>
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="0dp"
+                  android:layout_weight="7"
+                  android:orientation="vertical"
+                  android:paddingLeft="12dp"
+                  android:paddingTop="12dp"
+                  android:paddingRight="12dp"
+            >
+        <TextView style="@style/CategoryButtonCountTextStyle"
+                android:text="@string/tags"/>
+        <View android:layout_width="match_parent"
+              android:layout_height="1dp"
+              android:background="#11111111"
+              android:layout_marginTop="6dp"
+                />
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:orientation="vertical"
+                android:layout_marginTop="4dp">
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="0dp"
+                          android:layout_weight="1"
+                          android:gravity="center_vertical"
+                          android:orientation="horizontal">
+                <TextView
+                          style="@style/TagsButtonTextStyle"
+                          android:text="QQ"
+                        />
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="0dp"
+                          android:layout_weight="1"
+                          android:orientation="horizontal"
+                    >
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="0dp"
+                  android:layout_weight="7"
+                  android:orientation="vertical"
+                  android:paddingLeft="12dp"
+                  android:paddingTop="12dp"
+                  android:paddingRight="12dp"
+                  android:layout_marginBottom="20dp"
+            >
+        <TextView style="@style/CategoryButtonCountTextStyle"
+                  android:text="@string/tags"/>
+        <View android:layout_width="match_parent"
+              android:layout_height="1dp"
+              android:background="#11111111"
+              android:layout_marginTop="6dp"
+                />
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:orientation="vertical"
+                      android:layout_marginTop="4dp">
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="0dp"
+                          android:layout_weight="1"
+                          android:gravity="center_vertical"
+                          android:orientation="horizontal">
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="0dp"
+                          android:layout_weight="1"
+                          android:orientation="horizontal"
+                    >
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+                <TextView
+                        style="@style/TagsButtonTextStyle"
+                        android:text="QQ"
+                        />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

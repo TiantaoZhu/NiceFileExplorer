@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Baidu, Inc. All Rights Reserved.
+  -->
+<litepal>
+    <dbname value="nicefileexplor" />
+
+    <version value="1" />
+
+    <list>
+        <mapping class = "com.drslark.nicefileexplore.model.File"/>
+    </list>
+</litepal>

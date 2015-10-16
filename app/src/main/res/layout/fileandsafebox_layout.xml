@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="4"
+              android:orientation="horizontal"
+              android:background="@drawable/category_button">
+    <RelativeLayout android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent">
+        <TextView style="@style/CategoryButtonTextStyle"
+                  android:id="@+id/file_tree"
+                  android:text="@string/file_tree"
+                  android:layout_centerInParent="true"
+                />
+        <TextView style="@style/CategoryButtonCountTextStyle"
+                  android:id="@+id/des_file_tree"
+                  android:layout_below="@id/file_tree"
+                  android:layout_alignLeft="@id/file_tree"
+                  android:text="还有好多空间"
+                />
+
+
+    </RelativeLayout>
+    <View android:layout_width="1dp"
+          android:layout_height="match_parent"
+          android:background="#11111111"
+          android:layout_gravity="center"
+          android:layout_marginTop="15dp"
+          android:layout_marginBottom="15dp"
+
+            />
+    <RelativeLayout android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent">
+        <TextView style="@style/CategoryButtonTextStyle"
+                  android:id="@+id/safe_box"
+                  android:text="@string/safebox"
+                  android:layout_centerInParent="true"
+                />
+        <TextView style="@style/CategoryButtonCountTextStyle"
+                  android:id="@+id/des_safe_box"
+                  android:layout_below="@id/safe_box"
+                  android:layout_alignLeft="@id/safe_box"
+                  android:text="私密文件"
+                />
+    </RelativeLayout>
+</LinearLayout>

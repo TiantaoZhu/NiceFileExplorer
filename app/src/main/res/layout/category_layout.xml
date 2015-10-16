@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/category_page"
+              android:layout_width="match_parent"
+              android:layout_height="200dp"
+              android:orientation="vertical"
+              android:layout_marginTop="2dp">
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="0dip"
+                  android:layout_weight="1"
+                  android:orientation="horizontal"
+                  android:layout_gravity="center">
+        <LinearLayout android:id="@+id/category_pic"
+                      style="@style/CategoryButtonStyle"
+                      android:background="@drawable/category_button">
+            <ImageView android:src="@drawable/category_file_icon_pic"
+                       style="@style/CategoryButtonIconStyle"/>
+            <TextView android:text="@string/category_pic"
+                      style="@style/CategoryButtonTextStyle"/>
+            <TextView android:id="@+id/category_pic_count"
+                      style="@style/CategoryButtonCountTextStyle"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/category_video"
+                      style="@style/CategoryButtonStyle"
+                      android:background="@drawable/category_button">
+            <ImageView android:src="@drawable/category_file_icon_video"
+                       style="@style/CategoryButtonIconStyle"/>
+            <TextView android:text="@string/category_video"
+                      style="@style/CategoryButtonTextStyle"/>
+            <TextView android:id="@+id/category_video_count"
+                      style="@style/CategoryButtonCountTextStyle"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/category_document"
+                      style="@style/CategoryButtonStyle"
+                      android:background="@drawable/category_button">
+            <ImageView android:src="@drawable/category_file_icon_doc"
+                       style="@style/CategoryButtonIconStyle"/>
+            <TextView android:text="@string/category_doc"
+                      style="@style/CategoryButtonTextStyle"/>
+            <TextView android:id="@+id/category_doc_count"
+                      style="@style/CategoryButtonCountTextStyle"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/category_music"
+                      style="@style/CategoryButtonStyle"
+                      android:background="@drawable/category_button">
+            <ImageView android:src="@drawable/category_file_icon_music"
+                       style="@style/CategoryButtonIconStyle"/>
+            <TextView android:text="@string/category_music"
+                      style="@style/CategoryButtonTextStyle"/>
+            <TextView android:id="@+id/category_music_count"
+                      style="@style/CategoryButtonCountTextStyle"/>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="0dip" android:layout_weight="1"
+                  android:orientation="horizontal"
+                  android:layout_gravity="center">
+        <LinearLayout android:id="@+id/category_apk"
+                      style="@style/CategoryButtonStyle"
+                      android:background="@drawable/category_button">
+            <ImageView android:src="@drawable/category_file_icon_apk"
+                       style="@style/CategoryButtonIconStyle"/>
+            <TextView android:text="@string/category_apk"
+                      style="@style/CategoryButtonTextStyle"/>
+            <TextView android:id="@+id/category_apk_count"
+                      style="@style/CategoryButtonCountTextStyle"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/category_zip"
+                      style="@style/CategoryButtonStyle"
+                      android:background="@drawable/category_button">
+            <ImageView android:src="@drawable/category_file_icon_zip"
+                       style="@style/CategoryButtonIconStyle"/>
+            <TextView android:text="@string/category_zip"
+                      style="@style/CategoryButtonTextStyle"/>
+            <TextView android:id="@+id/category_zip_count"
+                      style="@style/CategoryButtonCountTextStyle"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/category_favorite"
+                      style="@style/CategoryButtonStyle"
+                      android:background="@drawable/category_button">
+            <ImageView android:src="@drawable/category_file_icon_fav"
+                       style="@style/CategoryButtonIconStyle"/>
+            <TextView android:text="@string/category_fav"
+                      style="@style/CategoryButtonTextStyle"/>
+            <TextView android:id="@+id/category_fav_count"
+                      style="@style/CategoryButtonCountTextStyle"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/category_bluetooth"
+                      style="@style/CategoryButtonStyle"
+                      android:background="@drawable/category_button">
+            <ImageView android:src="@drawable/category_file_icon_bluetooth"
+                       style="@style/CategoryButtonIconStyle"/>
+            <TextView android:text="@string/category_bluetooth"
+                      style="@style/CategoryButtonTextStyle"/>
+            <TextView android:id="@+id/category_bluetooth_count"
+                      style="@style/CategoryButtonCountTextStyle"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
