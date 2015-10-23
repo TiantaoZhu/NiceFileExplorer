@@ -23,6 +23,7 @@ public class TitleControlBaseActivity extends Activity {
         super.onCreate(savedInstanceState);
         mSoftActivty = new SoftReference<Activity>(this);
         ActivityManagerUtil.getInstance().pushActivity(mSoftActivty);
+
     }
 
     @Override

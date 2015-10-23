@@ -15,6 +15,24 @@ public class FileInfo {
     protected String absolutePath;
     private String[] tags;
     private String blongApp;
+    private long fileSize;
+    private long modefiedDate;
+
+    public long getModefiedDate() {
+        return modefiedDate;
+    }
+
+    public void setModefiedDate(long modefiedDate) {
+        this.modefiedDate = modefiedDate;
+    }
+
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
+    }
 
     public boolean isDir() {
         return isDir;

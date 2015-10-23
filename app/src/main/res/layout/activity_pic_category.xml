@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Baidu, Inc. All Rights Reserved.
+  -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <include layout="@layout/title_bar"
+            />
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="#aa000000"
+                  android:layout_below="@+id/titlebar"
+            >
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="10dp"
+                  android:textColor="#ffffff"
+                  android:visibility="gone"
+                  android:id="@+id/time_bar"
+                  android:text="本周"/>
+    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+            android:layout_below="@id/titlebar"
+            android:id="@+id/picview_recyler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="60dp"
+                  android:background="#aa000000"
+                  android:layout_alignParentBottom="true"
+                  android:orientation="horizontal"
+                  android:gravity="center_vertical"
+            >
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="微信"
+                  android:textSize="24sp"
+                  android:layout_marginLeft="10dp"
+                  android:textColor="#99ffffff"
+                  android:id="@+id/image_dir"/>
+    </LinearLayout>
+</RelativeLayout>

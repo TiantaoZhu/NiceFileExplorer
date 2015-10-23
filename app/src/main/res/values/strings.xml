@@ -24,4 +24,5 @@
     <string name="dialog_type_audio">音频</string>
     <string name="dialog_type_video">视频</string>
     <string name="dialog_type_image">图片</string>
+    <string name="category_all">全部</string>
 </resources>
