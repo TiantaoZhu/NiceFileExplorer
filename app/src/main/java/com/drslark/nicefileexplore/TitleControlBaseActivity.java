@@ -1,18 +1,19 @@
 
 package com.drslark.nicefileexplore;
 
-import java.lang.ref.SoftReference;
+import android.app.Activity;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.drslark.nicefileexplore.widget.TitleController;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.View;
+import java.lang.ref.SoftReference;
 
 /**
  * Created by zhutiantao on 2015/10/15.
  */
-public class TitleControlBaseActivity extends Activity {
+public class TitleControlBaseActivity extends AppCompatActivity {
     private TitleController controller;
     private View titleBar;
 

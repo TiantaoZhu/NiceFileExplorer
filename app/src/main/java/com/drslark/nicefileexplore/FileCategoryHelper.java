@@ -9,23 +9,19 @@ import android.provider.MediaStore.Audio;
 import android.provider.MediaStore.Files;
 import android.provider.MediaStore.Files.FileColumns;
 import android.provider.MediaStore.Images;
-import android.provider.MediaStore.Video;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
-import rx.Observable;
-import rx.Subscriber;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-import com.drslark.nicefileexplore.model.FileInfo;
+import com.drslark.nicefileexplore.model.MediaStoreData;
 import com.drslark.nicefileexplore.utils.FileSortHelper;
 import com.drslark.nicefileexplore.utils.FilenameExtFilter;
 import com.drslark.nicefileexplore.utils.Util;
+
+import java.io.FilenameFilter;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class FileCategoryHelper {
     public static final int COLUMN_ID = 0;
@@ -49,10 +45,9 @@ public class FileCategoryHelper {
     public static final int Favorite = 8009;
     public static final int Other = 8010;
 
-    
 
     private static String APK_EXT = "apk";
-    private static String[] ZIP_EXTS  = new String[] {
+    private static String[] ZIP_EXTS = new String[]{
             "zip", "rar"
     };
 
@@ -63,20 +58,20 @@ public class FileCategoryHelper {
             = new SparseArray<>();
 
     static {
-        categoryNames.put( All, R.string.category_all);
-        categoryNames.put( Music, R.string.category_music);
-        categoryNames.put( Video, R.string.category_video);
-        categoryNames.put( Picture, R.string.category_pic);
-        categoryNames.put( Doc, R.string.category_doc);
-        categoryNames.put( Zip, R.string.category_zip);
-        categoryNames.put( Apk, R.string.category_apk);
-        categoryNames.put( BlueTooth, R.string.category_bluetooth);
-        categoryNames.put( Favorite, R.string.category_fav);
+        categoryNames.put(All, R.string.category_all);
+        categoryNames.put(Music, R.string.category_music);
+        categoryNames.put(Video, R.string.category_video);
+        categoryNames.put(Picture, R.string.category_pic);
+        categoryNames.put(Doc, R.string.category_doc);
+        categoryNames.put(Zip, R.string.category_zip);
+        categoryNames.put(Apk, R.string.category_apk);
+        categoryNames.put(BlueTooth, R.string.category_bluetooth);
+        categoryNames.put(Favorite, R.string.category_fav);
     }
 
-    public static int[] sCategories = new int[] {
-             Music,  Video,  Picture,
-             Doc,  Zip,  Apk,  BlueTooth
+    public static int[] sCategories = new int[]{
+            Music, Video, Picture,
+            Doc, Zip, Apk, BlueTooth
     };
 
     private int mCategory;
@@ -85,7 +80,7 @@ public class FileCategoryHelper {
 
     public FileCategoryHelper(Context context) {
         mContext = context;
-        mCategory =  All;
+        mCategory = All;
     }
 
     public int getCurCategory() {
@@ -144,6 +139,7 @@ public class FileCategoryHelper {
         info.count = count;
         info.size = size;
     }
+
     private String buildDocSelection(String mimeType) {
         return "(" + FileColumns.MIME_TYPE + "=='" + mimeType + "')";
     }
@@ -156,8 +152,8 @@ public class FileCategoryHelper {
                     .append(aSDocMimeTypesSet).append("') OR ");
         }
         String result = selection.substring(0, selection.lastIndexOf(")") + 1);
-        Log.d(LOG_TAG,"docSelection : " + result);
-        return  result;
+        Log.d(LOG_TAG, "docSelection : " + result);
+        return result;
     }
 
     private String buildSelectionByCategory(int cat) {
@@ -181,7 +177,7 @@ public class FileCategoryHelper {
     private Uri getContentUriByCategory(int cat) {
         Uri uri;
         String volumeName = "external";
-        switch(cat) {
+        switch (cat) {
             case Doc:
             case Zip:
             case Apk:
@@ -196,8 +192,8 @@ public class FileCategoryHelper {
             case Picture:
                 uri = Images.Media.getContentUri(volumeName);
                 break;
-           default:
-               uri = null;
+            default:
+                uri = null;
         }
         return uri;
     }
@@ -221,7 +217,7 @@ public class FileCategoryHelper {
         return sortOrder;
     }
 
-    public Cursor query(int fc, int sort) {
+    public Cursor query(int fc, int sort, @Nullable String[] columns) {
 
         Uri uri = getContentUriByCategory(fc);
         String selection = buildSelectionByCategory(fc);
@@ -229,15 +225,15 @@ public class FileCategoryHelper {
         if (uri == null) {
             return null;
         }
-
-        String[] columns = new String[] {
-                FileColumns._ID, FileColumns.DATA, FileColumns.SIZE, FileColumns.DATE_MODIFIED
-        };
+        if (columns == null) {
+            columns = new String[]{
+                    FileColumns._ID, FileColumns.DATA, FileColumns.SIZE, FileColumns.DATE_MODIFIED
+            };
+        }
         Cursor cursor = mContext.getContentResolver().query(uri, columns, selection, null, sortOrder);
         if (cursor == null) {
             return null;
         }
-
         return cursor;
     }
 
@@ -251,22 +247,22 @@ public class FileCategoryHelper {
         String volumeName = "external";
 
         Uri uri = Audio.Media.getContentUri(volumeName);
-        refreshMediaCategory( Music, uri);
+        refreshMediaCategory(Music, uri);
 
         uri = MediaStore.Video.Media.getContentUri(volumeName);
-        refreshMediaCategory( Video, uri);
+        refreshMediaCategory(Video, uri);
 
         uri = Images.Media.getContentUri(volumeName);
-        refreshMediaCategory( Picture, uri);
+        refreshMediaCategory(Picture, uri);
 
         uri = Files.getContentUri(volumeName);
-        refreshMediaCategory( Doc, uri);
-        refreshMediaCategory( Zip, uri);
-        refreshMediaCategory( Apk, uri);
+        refreshMediaCategory(Doc, uri);
+        refreshMediaCategory(Zip, uri);
+        refreshMediaCategory(Apk, uri);
     }
 
     private boolean refreshMediaCategory(int fc, Uri uri) {
-        String[] columns = new String[] {
+        String[] columns = new String[]{
                 "COUNT(*)", "SUM(_size)"
         };
         Cursor c = mContext.getContentResolver().query(uri, columns, buildSelectionByCategory(fc), null, null);
@@ -282,6 +278,112 @@ public class FileCategoryHelper {
         }
 
         return false;
+    }
+
+    private static final String[] IMAGE_PROJECTION =
+            new String[]{
+                    MediaStore.Images.ImageColumns._ID,
+                    MediaStore.Files.FileColumns.DATA,
+                    MediaStore.Images.ImageColumns.DATE_TAKEN,
+                    MediaStore.Images.ImageColumns.DATE_MODIFIED,
+                    MediaStore.Images.ImageColumns.MIME_TYPE,
+                    MediaStore.Images.ImageColumns.ORIENTATION,
+            };
+
+    private static final String[] VIDEO_PROJECTION =
+            new String[]{
+                    MediaStore.Video.VideoColumns._ID,
+                    MediaStore.Files.FileColumns.DATA,
+                    MediaStore.Video.VideoColumns.DATE_TAKEN,
+                    MediaStore.Video.VideoColumns.DATE_MODIFIED,
+                    MediaStore.Video.VideoColumns.MIME_TYPE,
+                    "0 AS " + MediaStore.Images.ImageColumns.ORIENTATION,
+            };
+
+    public List<MediaStoreData> queryImages() {
+        return meargeSort(
+                query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION,
+                        MediaStore.Images.ImageColumns.DATE_TAKEN,
+                        MediaStoreData.Type.IMAGE),
+                query(Images.Media.INTERNAL_CONTENT_URI, IMAGE_PROJECTION,
+                        MediaStore.Images.ImageColumns.DATE_TAKEN,
+                        MediaStoreData.Type.IMAGE),
+                new Comparator<MediaStoreData>() {
+                    @Override
+                    public int compare(MediaStoreData lhs, MediaStoreData rhs) {
+                        return lhs.dateModified >= rhs.dateModified ? 1 : -1;
+                    }
+                });
+    }
+
+    public List<MediaStoreData> queryVideos() {
+        return meargeSort(
+                query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION,
+                        MediaStore.Video.VideoColumns.DATE_TAKEN,
+                        MediaStoreData.Type.VIDEO),
+                query(MediaStore.Video.Media.INTERNAL_CONTENT_URI, VIDEO_PROJECTION,
+                        MediaStore.Video.VideoColumns.DATE_TAKEN,
+                        MediaStoreData.Type.VIDEO),
+                new Comparator<MediaStoreData>() {
+                    @Override
+                    public int compare(MediaStoreData lhs, MediaStoreData rhs) {
+                        return lhs.dateModified >= rhs.dateModified ? 1 : -1;
+                    }
+                });
+    }
+
+    private List<MediaStoreData> query(Uri contentUri, String[] projection, String sortByCol, MediaStoreData.Type type) {
+        final List<MediaStoreData> data = new LinkedList<>();
+        Cursor cursor = mContext.getContentResolver()
+                .query(contentUri, projection, null, null, sortByCol + " DESC");
+
+        if (cursor == null) {
+            return data;
+        }
+
+        try {
+            while (cursor.moveToNext()) {
+                long id = cursor.getLong(0);
+                String name = cursor.getString(1);
+                long dateTaken = cursor.getLong(2);
+                String mimeType = cursor.getString(3);
+                long dateModified = cursor.getLong(4);
+                int orientation = cursor.getInt(5);
+
+                data.add(new MediaStoreData(id, name, Uri.withAppendedPath(contentUri, Long.toString(id)),
+                        mimeType, dateTaken, dateModified, orientation, type
+                ));
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return data;
+    }
+
+    private <T extends List<Element>, Element> List<Element> meargeSort(T first, T second, Comparator<Element> comparator) {
+        List<Element> result = new LinkedList<>();
+        Log.d(LOG_TAG,"first Size:" + first.size());
+        Log.d(LOG_TAG,"second Size:" + second.size());
+        int i = 0;
+        int j = 0;
+        while (i < first.size() && j < second.size()) {
+            if (comparator.compare(first.get(i), second.get(j)) < 0) {
+                result.add(second.get(j));
+                j++;
+            } else {
+                result.add(first.get(i));
+                i++;
+            }
+        }
+        if (i < first.size()) {
+            result.addAll(first.subList(i, first.size()));
+        }
+        if (j < second.size()) {
+            result.addAll(second.subList(j, second.size()));
+        }
+        return result;
+
     }
 
 

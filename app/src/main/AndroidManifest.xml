@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".UserInfoActivity"/>
-        <activity android:name=".PicCategoryActivity"/>
+        <activity android:name=".MediaCategoryActivity"/>
     </application>
 
 </manifest>

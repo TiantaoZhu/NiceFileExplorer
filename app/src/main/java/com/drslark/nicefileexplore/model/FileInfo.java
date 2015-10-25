@@ -7,7 +7,7 @@ package com.drslark.nicefileexplore.model;
 /**
  * Created by zhutiantao on 2015/10/14.
  */
-public class FileInfo {
+public class FileInfo implements ModelSignature{
     private int id;
     private String name;
     private String relativePath;
@@ -90,5 +90,10 @@ public class FileInfo {
 
     public void setBlongApp(String blongApp) {
         this.blongApp = blongApp;
+    }
+
+    @Override
+    public String getSignature() {
+        return absolutePath;
     }
 }

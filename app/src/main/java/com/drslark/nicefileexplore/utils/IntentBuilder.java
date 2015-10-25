@@ -4,12 +4,6 @@
 
 package com.drslark.nicefileexplore.utils;
 
-import java.io.File;
-import java.util.ArrayList;
-
-import com.drslark.nicefileexplore.R;
-import com.drslark.nicefileexplore.model.FileInfo;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,10 +11,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.drslark.nicefileexplore.R;
+import com.drslark.nicefileexplore.model.FileInfo;
+
+import java.io.File;
+import java.util.ArrayList;
+
 public class IntentBuilder {
 
-    public static void viewFile(final Context context, final String filePath) {
-        String type = getMimeType(filePath);
+    public static void viewFile(final Context context, final String filePath , String mimeType) {
+        String type = mimeType == null ? getMimeType(filePath):mimeType;
 
         if (!TextUtils.isEmpty(type) && !TextUtils.equals(type, "*/*")) {
             /* 设置intent的file与MimeType */

@@ -5,8 +5,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <ImageView android:layout_width="match_parent"
+    <com.drslark.nicefileexplore.widget.SquareImageView android:layout_width="match_parent"
                android:layout_height="match_parent"
+               android:padding="3dp"
+               android:scaleType="fitCenter"
                android:layout_centerInParent="true"
             android:id="@+id/item_pic_view"/>
     <android.support.v7.widget.AppCompatCheckBox
