@@ -301,7 +301,7 @@ public class FileCategoryHelper {
             };
 
     public List<MediaStoreData> queryImages() {
-        return meargeSort(
+        return mergeSort(
                 query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION,
                         MediaStore.Images.ImageColumns.DATE_TAKEN,
                         MediaStoreData.Type.IMAGE),
@@ -317,7 +317,7 @@ public class FileCategoryHelper {
     }
 
     public List<MediaStoreData> queryVideos() {
-        return meargeSort(
+        return mergeSort(
                 query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION,
                         MediaStore.Video.VideoColumns.DATE_TAKEN,
                         MediaStoreData.Type.VIDEO),
@@ -340,14 +340,13 @@ public class FileCategoryHelper {
         if (cursor == null) {
             return data;
         }
-
         try {
             while (cursor.moveToNext()) {
                 long id = cursor.getLong(0);
                 String name = cursor.getString(1);
                 long dateTaken = cursor.getLong(2);
-                String mimeType = cursor.getString(3);
-                long dateModified = cursor.getLong(4);
+                long dateModified = cursor.getLong(3);
+                String mimeType = cursor.getString(4);
                 int orientation = cursor.getInt(5);
 
                 data.add(new MediaStoreData(id, name, Uri.withAppendedPath(contentUri, Long.toString(id)),
@@ -361,7 +360,8 @@ public class FileCategoryHelper {
         return data;
     }
 
-    private <T extends List<Element>, Element> List<Element> meargeSort(T first, T second, Comparator<Element> comparator) {
+    public static  <T extends List<Element>, Element> List<Element> mergeSort(T first, T second, Comparator<Element>
+            comparator) {
         List<Element> result = new LinkedList<>();
         Log.d(LOG_TAG,"first Size:" + first.size());
         Log.d(LOG_TAG,"second Size:" + second.size());
@@ -369,11 +369,11 @@ public class FileCategoryHelper {
         int j = 0;
         while (i < first.size() && j < second.size()) {
             if (comparator.compare(first.get(i), second.get(j)) < 0) {
-                result.add(second.get(j));
-                j++;
-            } else {
                 result.add(first.get(i));
                 i++;
+            } else {
+                result.add(second.get(j));
+                j++;
             }
         }
         if (i < first.size()) {

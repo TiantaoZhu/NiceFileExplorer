@@ -26,16 +26,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="60dp"
+                  android:layout_height="40dp"
                   android:background="#aa000000"
                   android:layout_alignParentBottom="true"
                   android:orientation="horizontal"
                   android:gravity="center_vertical"
             >
-        <TextView android:layout_width="wrap_content"
+        <Button android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                   android:text="微信"
-                  android:textSize="24sp"
+                  android:textSize="18sp"
                   android:layout_marginLeft="10dp"
                   android:textColor="#99ffffff"
                   android:id="@+id/image_dir"/>
