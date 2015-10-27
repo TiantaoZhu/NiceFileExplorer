@@ -1,23 +1,12 @@
 package com.drslark.nicefileexplore;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.MemoryCategory;
-import com.drslark.nicefileexplore.model.MediaStoreData;
-import com.drslark.nicefileexplore.utils.IntentBuilder;
-import com.drslark.nicefileexplore.widget.TitleController;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -31,12 +20,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.MemoryCategory;
+import com.drslark.nicefileexplore.model.MediaStoreData;
+import com.drslark.nicefileexplore.utils.IntentBuilder;
+import com.drslark.nicefileexplore.widget.TitleController;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import rx.Observable;
 import rx.Subscriber;
 
@@ -92,7 +92,6 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
         fileCategoryHelper = new FileCategoryHelper(this);
         initView(savedInstanceState);
         initData();
-
     }
 
     @Override
@@ -185,6 +184,7 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         1500);
                 popupWindow.setFocusable(true);
+                popupWindow.setBackgroundDrawable(new BitmapDrawable());
                 popupWindow.showAtLocation(currentDirTxt, Gravity.BOTTOM, 0, -100);
                 initPopViewListView(popView);
 
@@ -195,7 +195,11 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
 
     private void initPopViewListView(View popView) {
         popDirListView = (ListView) popView.findViewById(R.id.pop_media_dirs);
-        final List<String> allDirs = new ArrayList<>(allMediaMap.keySet());
+
+        final List<String> allDirs = new ArrayList<>();
+        allDirs.add("");
+        allDirs.addAll(allMediaMap.keySet());
+
         popDirListView.setAdapter(new BaseAdapter() {
             @Override
             public int getCount() {
@@ -221,23 +225,29 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
                 TextView name = (TextView) convertView.findViewById(R.id.dir_name_txt);
                 TextView count = (TextView) convertView.findViewById(R.id.dir_count_txt);
                 ImageView check = (ImageView) convertView.findViewById(R.id.dir_check_img);
+
                 final String dir = allDirs.get(position);
-                final String dirname = dir.substring(dir.lastIndexOf("/") + 1);
+                final boolean isAll = dir.equals("");
+                final String dirname = isAll?"全部":dir.substring(dir.lastIndexOf("/") + 1);
                 check.setVisibility(dir.equals(currentDir)?View.VISIBLE:View.GONE);
                 name.setText(dirname);
-                count.setText(allMediaMap.get(dir).size() + "项");
-                Glide.with(MediaCategoryActivity.this)
-                        .load(allMediaMap.get(dir).get(0).uri)
-                        .centerCrop()
-                        .into(cover);
+
+                count.setText((isAll ? mediaDataSource.size() :allMediaMap.get(dir).size()) + "项");
+                if (!isAll) {
+                    Glide.with(MediaCategoryActivity.this)
+                            .load(allMediaMap.get(dir).get(0).uri)
+                            .centerCrop()
+                            .into(cover);
+                }
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         currentDir = dir;
-                        adapter.setDataSource(allMediaMap.get(dir));
+                        adapter.setDataSource(isAll ? mediaDataSource : allMediaMap.get(dir));
                         adapter.notifyDataSetChanged();
                         popupWindow.dismiss();
-                        currentDirTxt.setText(dirname + " (" + allMediaMap.get(dir).size() + "项)" );
+                        currentDirTxt.setText(dirname + " (" + (isAll ? mediaDataSource.size() :
+                                allMediaMap.get(dir).size() )+ "项)" );
                     }
                 });
 

@@ -1,12 +1,9 @@
-/*
- * Copyright (C) 2015 Baidu, Inc. All Rights Reserved.
- */
 package com.drslark.nicefileexplore;
+
+import android.app.Activity;
 
 import java.lang.ref.SoftReference;
 import java.util.Stack;
-
-import android.app.Activity;
 
 public class ActivityManagerUtil {
     private Stack<SoftReference<Activity>> activityStack;
