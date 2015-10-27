@@ -90,8 +90,9 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
         showWhat = getIntent().getIntExtra(SHOW_WHAT, SHOW_PIC);
         setContentView(R.layout.activity_pic_category);
         fileCategoryHelper = new FileCategoryHelper(this);
-        initData();
         initView(savedInstanceState);
+        initData();
+
     }
 
     @Override
@@ -137,7 +138,9 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
                 if (dialog != null) {
                     dialog.dismiss();
                 }
+                adapter.setDataSource(mediaDataSource);
                 adapter.notifyDataSetChanged();
+                currentDirTxt.setText("全部 (" + mediaDataSource.size() +")项");
             }
 
             @Override
@@ -162,7 +165,6 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
 
         adapter = new PicGridAdapter();
         picRecyclerView.setAdapter(adapter);
-        adapter.setDataSource(mediaDataSource);
 
         picRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
@@ -171,11 +173,6 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
             }
         });
 
-        //        if (savedInstanceState != null) {
-        //            int index = savedInstanceState.getInt(STATE_POSITION_INDEX);
-        //            picRecyclerView.scrollToPosition(index);
-        //        }
-
         currentDirTxt = (TextView) findViewById(R.id.image_dir);
         currentDirTxt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,11 +180,12 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
 
                 LayoutInflater inflater = LayoutInflater.from(MediaCategoryActivity.this);
                 final View popView = inflater.inflate(R.layout.media_popup_window, null);
-                popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.MATCH_PARENT, currentDirTxt.getTop() -
-                        picRecyclerView.getTop() - 100);
+                popView.setBackgroundColor(0xa0ffffff);
+                popupWindow = new PopupWindow(popView,
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        1500);
                 popupWindow.setFocusable(true);
-                popupWindow.setBackgroundDrawable(new ColorDrawable(0xb0000000));
-                popupWindow.showAtLocation(currentDirTxt, Gravity.BOTTOM, 0, 0);
+                popupWindow.showAtLocation(currentDirTxt, Gravity.BOTTOM, 0, -100);
                 initPopViewListView(popView);
 
             }
@@ -224,8 +222,9 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
                 TextView count = (TextView) convertView.findViewById(R.id.dir_count_txt);
                 ImageView check = (ImageView) convertView.findViewById(R.id.dir_check_img);
                 final String dir = allDirs.get(position);
+                final String dirname = dir.substring(dir.lastIndexOf("/") + 1);
                 check.setVisibility(dir.equals(currentDir)?View.VISIBLE:View.GONE);
-                name.setText(dir);
+                name.setText(dirname);
                 count.setText(allMediaMap.get(dir).size() + "项");
                 Glide.with(MediaCategoryActivity.this)
                         .load(allMediaMap.get(dir).get(0).uri)
@@ -238,6 +237,7 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
                         adapter.setDataSource(allMediaMap.get(dir));
                         adapter.notifyDataSetChanged();
                         popupWindow.dismiss();
+                        currentDirTxt.setText(dirname + " (" + allMediaMap.get(dir).size() + "项)" );
                     }
                 });
 
@@ -262,6 +262,7 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
 
         public PicGridAdapter() {
             this.inflater = LayoutInflater.from(MediaCategoryActivity.this);
+            dataSource = new ArrayList<>();
         }
 
         @Override
@@ -324,15 +325,6 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
             this.dataSource = dataSource;
         }
 
-        //        @Override
-        //        public List<MediaStoreData> getPreloadItems(int position) {
-        //            return dataSource.subList(position,position + SPAN_COUNT);
-        //        }
-        //
-        //        @Override
-        //        public GenericRequestBuilder getPreloadRequestBuilder(MediaStoreData item) {
-        //            return Glide.with(MediaCategoryActivity.this).load(item.uri);
-        //        }
 
     }
 
