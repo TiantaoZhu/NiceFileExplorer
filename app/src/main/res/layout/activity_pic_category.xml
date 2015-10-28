@@ -38,7 +38,7 @@
                   android:text="微信"
                   android:textSize="18sp"
                   android:layout_marginLeft="10dp"
-                  android:textColor="#99ffffff"
+                android:textColor="@color/media_popupwindow_button_color"
                   android:id="@+id/image_dir"/>
     </LinearLayout>
 </RelativeLayout>

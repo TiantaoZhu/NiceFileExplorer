@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="media_popupwindow_bg_color">#f3ffffff</color>
+    <color name="media_popupwindow_button_color">#cfcfcf</color>
+    <color name="grey">#aaa</color>
+</resources>

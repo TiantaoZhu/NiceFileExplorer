@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -160,7 +161,7 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
         Glide.get(this).setMemoryCategory(MemoryCategory.HIGH);
         picRecyclerView = (RecyclerView) findViewById(R.id.picview_recyler);
         picRecyclerView.setLayoutManager(new GridLayoutManager(this, SPAN_COUNT));
-        imageWidth = getScreenWidth(this) / SPAN_COUNT - 2 * GRID_MARGIN;
+        imageWidth = getScreenDimens(this)[0] / SPAN_COUNT - 2 * GRID_MARGIN;
 
         adapter = new PicGridAdapter();
         picRecyclerView.setAdapter(adapter);
@@ -179,13 +180,17 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
 
                 LayoutInflater inflater = LayoutInflater.from(MediaCategoryActivity.this);
                 final View popView = inflater.inflate(R.layout.media_popup_window, null);
-                popView.setBackgroundColor(0xa0ffffff);
+                popView.setBackgroundColor(getResources().getColor(R.color.media_popupwindow_bg_color));
                 popupWindow = new PopupWindow(popView,
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        1500);
+                        (int) (getScreenDimens(MediaCategoryActivity.this)[1] * 0.7));
                 popupWindow.setFocusable(true);
+                //    popupWindow.setAnimationStyle(R.style.mypopwindow_anim_style);
                 popupWindow.setBackgroundDrawable(new BitmapDrawable());
-                popupWindow.showAtLocation(currentDirTxt, Gravity.BOTTOM, 0, -100);
+                int[] v_location = new int[2];
+                ((LinearLayout) v.getParent()).getLocationOnScreen(v_location);
+                popupWindow.showAtLocation(currentDirTxt, Gravity.NO_GRAVITY, v_location[0],
+                        v_location[1] - popupWindow.getHeight());
                 initPopViewListView(popView);
 
             }
@@ -350,18 +355,20 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
         }
     }
 
-    private static int getScreenWidth(Context context) {
+    private static int[] getScreenDimens(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
-        final int result;
+        final int[] result = new int[2];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             Point size = new Point();
             display.getSize(size);
-            result = size.x;
+            result[0] = size.x;
+            result[1] = size.y;
         } else {
-            result = display.getWidth();
+            result[0] = display.getWidth();
+            result[1] = display.getHeight();
         }
-        Log.d(TAG, "screenWidth" + result);
+        Log.d(TAG, "screenWidth" + result[0] + "screenHeight" + result[1]);
         return result;
     }
 

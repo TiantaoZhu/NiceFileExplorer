@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
-    <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <com.drslark.nicefileexplore.widget.SquareImageView
-                android:layout_alignParentLeft="true"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:id="@+id/dir_cover_img"
-                android:layout_margin="8dp"
-                android:src="@drawable/pic_place_holder"
-                android:layout_centerVertical="true"
 
-                />
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+    <com.drslark.nicefileexplore.widget.SquareImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:id="@+id/dir_cover_img"
+            android:layout_margin="8dp"
+            android:src="@drawable/pic_place_holder"
+            android:layout_centerVertical="true"
+
+            />
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:layout_toRightOf="@id/dir_cover_img"
+                  android:layout_centerVertical="true"
+            >
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:id="@+id/dir_name_txt"
@@ -32,15 +37,17 @@
                   android:textSize="16sp"
                   android:text="0"
                 />
-        <ImageView android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_alignParentRight="true"
-                   android:layout_margin="8dp"
-                   android:layout_centerVertical="true"
-                   android:src="@drawable/image_icon_down"
-                   android:id="@+id/dir_check_img"
-                   android:visibility="gone"
-                />
 
-    </RelativeLayout>
-</FrameLayout>
+    </LinearLayout>
+
+    <ImageView android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_margin="8dp"
+               android:src="@drawable/image_icon_down"
+               android:id="@+id/dir_check_img"
+               android:layout_alignParentRight="true"
+               android:layout_centerVertical="true"
+               android:visibility="gone"
+            />
+
+</RelativeLayout>

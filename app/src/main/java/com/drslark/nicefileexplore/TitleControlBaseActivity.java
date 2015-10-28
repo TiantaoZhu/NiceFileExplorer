@@ -22,6 +22,7 @@ public class TitleControlBaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mSoftActivty = new SoftReference<Activity>(this);
         ActivityManagerUtil.getInstance().pushActivity(mSoftActivty);
 
@@ -47,6 +48,10 @@ public class TitleControlBaseActivity extends AppCompatActivity {
     }
 
     public TitleController getTitleController() {
+        if (titleBar == null) {
+            titleBar = findViewById(R.id.titlebar);
+            controller = new TitleController(this, titleBar);
+        }
         return controller;
     }
 
