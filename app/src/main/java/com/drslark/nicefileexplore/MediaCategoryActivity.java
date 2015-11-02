@@ -22,9 +22,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -188,7 +188,7 @@ public class MediaCategoryActivity extends TitleControlBaseActivity {
                 //    popupWindow.setAnimationStyle(R.style.mypopwindow_anim_style);
                 popupWindow.setBackgroundDrawable(new BitmapDrawable());
                 int[] v_location = new int[2];
-                ((LinearLayout) v.getParent()).getLocationOnScreen(v_location);
+                ((RelativeLayout) v.getParent()).getLocationOnScreen(v_location);
                 popupWindow.showAtLocation(currentDirTxt, Gravity.NO_GRAVITY, v_location[0],
                         v_location[1] - popupWindow.getHeight());
                 initPopViewListView(popView);

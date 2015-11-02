@@ -25,15 +25,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FileCategoryHelper {
-    public static final int COLUMN_ID = 0;
 
-    public static final int COLUMN_PATH = 1;
-
-    public static final int COLUMN_SIZE = 2;
-
-    public static final int COLUMN_DATE = 3;
-
-    private static final String LOG_TAG = "intHelper";
+    private static final String TAG = "intHelper";
+    private static final int PAGE_SIZE = 50; 
     public static final int All = 8000;
     public static final int Music = 8001;
     public static final int Video = 8002;
@@ -153,7 +147,7 @@ public class FileCategoryHelper {
                     .append(aSDocMimeTypesSet).append("') OR ");
         }
         String result = selection.substring(0, selection.lastIndexOf(")") + 1);
-        Log.d(LOG_TAG, "docSelection : " + result);
+        Log.d(TAG, "docSelection : " + result);
         return result;
     }
 
@@ -218,7 +212,7 @@ public class FileCategoryHelper {
         return sortOrder;
     }
 
-    public Cursor query(int fc, int sort, @Nullable String[] columns) {
+    public List<FileStoreData> query(int fc, int sort, @Nullable String[] columns) {
 
         Uri uri = getContentUriByCategory(fc);
         String selection = buildSelectionByCategory(fc);
@@ -227,15 +221,26 @@ public class FileCategoryHelper {
             return null;
         }
         if (columns == null) {
-            columns = new String[]{
-                    FileColumns._ID, FileColumns.DATA, FileColumns.SIZE, FileColumns.DATE_MODIFIED
-            };
+            columns = FILE_PROJECTION;
         }
         Cursor cursor = mContext.getContentResolver().query(uri, columns, selection, null, sortOrder);
         if (cursor == null) {
             return null;
         }
-        return cursor;
+        LinkedList<FileStoreData> files = new LinkedList<>();
+        while (cursor.moveToNext()) {
+            if (cursor.getLong(5) == 0) {
+                continue;
+            }
+            Long id = cursor.getLong(0);
+            FileStoreData data = new FileStoreData(Uri.withAppendedPath(getContentUriByCategory(fc),
+                    id.toString()), id,
+                    cursor.getString(1), cursor.getLong(2), cursor.getLong(3),
+                    cursor.getString(4), cursor.getLong(5));
+            files.add(data);
+        }
+        Log.d(TAG, "endCursor" + System.currentTimeMillis());
+        return files;
     }
 
     public void refreshCategoryInfo() {
@@ -268,7 +273,7 @@ public class FileCategoryHelper {
         };
         Cursor c = mContext.getContentResolver().query(uri, columns, buildSelectionByCategory(fc), null, null);
         if (c == null) {
-            Log.e(LOG_TAG, "fail to query uri:" + uri);
+            Log.e(TAG, "fail to query uri:" + uri);
             return false;
         }
 
@@ -281,27 +286,10 @@ public class FileCategoryHelper {
         return false;
     }
 
-    private static final String[] DOC_PROJECTION = {
+    private static final String[] FILE_PROJECTION = {
             FileColumns._ID, FileColumns.DATA, FileColumns.DATE_ADDED, FileColumns.DATE_MODIFIED, FileColumns.MIME_TYPE,
             FileColumns.SIZE
     };
-
-    public List<FileStoreData> queryDoc() {
-        Cursor cursor = query(Doc, FileSortHelper.DATE, DOC_PROJECTION);
-        LinkedList<FileStoreData> files = new LinkedList<>();
-        while (cursor.moveToNext()) {
-            if (cursor.getLong(5) == 0) {
-                continue;
-            }
-            Long id = cursor.getLong(0);
-            FileStoreData data = new FileStoreData(Uri.withAppendedPath(getContentUriByCategory(Doc),
-                    id.toString()), id,
-                    cursor.getString(1), cursor.getLong(2), cursor.getLong(3),
-                    cursor.getString(4), cursor.getLong(5));
-            files.add(data);
-        }
-        return files;
-    }
 
     private static final String[] IMAGE_PROJECTION =
             new String[]{
@@ -386,8 +374,8 @@ public class FileCategoryHelper {
     public static  <T extends List<Element>, Element> List<Element> mergeSort(T first, T second, Comparator<Element>
             comparator) {
         List<Element> result = new LinkedList<>();
-        Log.d(LOG_TAG,"first Size:" + first.size());
-        Log.d(LOG_TAG,"second Size:" + second.size());
+        Log.d(TAG, "first Size:" + first.size());
+        Log.d(TAG, "second Size:" + second.size());
         int i = 0;
         int j = 0;
         while (i < first.size() && j < second.size()) {

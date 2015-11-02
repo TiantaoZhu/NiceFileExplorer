@@ -24,16 +24,16 @@ public class MainActivity extends TitleControlBaseActivity implements View.OnCli
             case R.id.category_pic: MediaCategoryActivity.actionShow(this,MediaCategoryActivity.SHOW_PIC);break;
             case R.id.category_video: MediaCategoryActivity.actionShow(this,MediaCategoryActivity.SHOW_VIDEO);break;
             case R.id.category_document:
-                GeneralCategoryActivity.actionShow(this, GeneralCategoryActivity.DOC);
+                GeneralCategoryActivity.actionShow(this, FileCategoryHelper.Doc);
                 break;
             case R.id.category_zip:
-                GeneralCategoryActivity.actionShow(this, GeneralCategoryActivity.ZIP);
+                GeneralCategoryActivity.actionShow(this, FileCategoryHelper.Zip);
                 break;
             case R.id.category_music:
-                GeneralCategoryActivity.actionShow(this, GeneralCategoryActivity.MUSIC);
+                GeneralCategoryActivity.actionShow(this, FileCategoryHelper.Music);
                 break;
             case R.id.category_apk:
-                GeneralCategoryActivity.actionShow(this, GeneralCategoryActivity.APK);
+                GeneralCategoryActivity.actionShow(this, FileCategoryHelper.Apk);
                 break;
 
 

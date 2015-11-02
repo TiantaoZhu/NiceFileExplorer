@@ -1,42 +1,44 @@
 package com.drslark.nicefileexplore;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Looper;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.drslark.nicefileexplore.model.FileStoreData;
+import com.drslark.nicefileexplore.utils.FileSortHelper;
+import com.drslark.nicefileexplore.utils.Util;
+import com.drslark.nicefileexplore.widget.GeneralViewHolder;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import com.bumptech.glide.Glide;
-import com.drslark.nicefileexplore.model.FileStoreData;
-import com.drslark.nicefileexplore.utils.FileSortHelper;
-import com.drslark.nicefileexplore.utils.Util;
-import com.drslark.nicefileexplore.widget.GeneralViewHolder;
-
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by zhutiantao on 2015/11/2.
  */
 public class GeneralCategoryActivity extends TitleControlBaseActivity {
-    public static final int DOC = 9090;
-    public static final int MUSIC = 9091;
-    public static final int APK = 9092;
-    public static final int ZIP = 9093;
     private static final String CATEGORY_DATA = "CATEGORY_DATA";
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private List<FileStoreData> files = new ArrayList<>();
     private FileCategoryHelper fileCategoryHelper;
     private int categoryKind;
+    private ProgressDialog mProgressDialog;
 
     public static void actionShow(Context context, int kind) {
         Intent intent = new Intent(context, GeneralCategoryActivity.class);
@@ -47,7 +49,7 @@ public class GeneralCategoryActivity extends TitleControlBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        categoryKind = getIntent().getIntExtra(CATEGORY_DATA, DOC);
+        categoryKind = getIntent().getIntExtra(CATEGORY_DATA, FileCategoryHelper.Doc);
         setContentView(R.layout.activity_pic_category);
         recyclerView = (RecyclerView) findViewById(R.id.picview_recyler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -59,12 +61,54 @@ public class GeneralCategoryActivity extends TitleControlBaseActivity {
 
     }
 
+
     private void refreshFiles() {
-        switch (categoryKind) {
-            case DOC:
-                files = fileCategoryHelper.queryDoc();
-                break;
-        }
+        Observable.create(new Observable.OnSubscribe<List<FileStoreData>>() {
+            @Override
+            public void call(Subscriber<? super List<FileStoreData>> subscriber) {
+                subscriber.onStart();
+                subscriber.onNext(fileCategoryHelper.query(categoryKind, FileSortHelper.DATE, null));
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).doOnTerminate(new Action0() {
+            @Override
+            public void call() {
+                if (Looper.myLooper() == Looper.getMainLooper()
+                        && mProgressDialog != null) {
+                    mProgressDialog.dismiss();
+                }
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<FileStoreData>>() {
+                    @Override
+                    public void onStart() {
+                        if (mProgressDialog == null) {
+                            mProgressDialog = new ProgressDialog(GeneralCategoryActivity.this);
+                            mProgressDialog.setIndeterminate(false);
+                            mProgressDialog.setTitle("正在加载...");
+                            mProgressDialog.show();
+                        }
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        if (mProgressDialog != null) {
+                            mProgressDialog.dismiss();
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<FileStoreData> fileStoreDatas) {
+                        files = fileStoreDatas;
+                        adapter.notifyDataSetChanged();
+                    }
+                });
     }
 
     private class FileRecylerViewAdapter extends RecyclerView.Adapter<GeneralViewHolder> {
@@ -80,25 +124,21 @@ public class GeneralCategoryActivity extends TitleControlBaseActivity {
         @Override
         public void onBindViewHolder(GeneralViewHolder holder, int position) {
             FileStoreData data = files.get(position);
-            if (data.fileSize == 0) {
-                return;
-            }
             switch (categoryKind) {
-                case DOC:
-                    Glide.with(GeneralCategoryActivity.this).load(R.drawable.category_file_icon_doc).into(holder
-                            .file_icon);
+                case FileCategoryHelper.Doc:
+                    holder.file_icon.setImageResource(R.drawable.category_file_icon_doc);
                     break;
-                case MUSIC:
-                    Glide.with(GeneralCategoryActivity.this).load(R.drawable.category_file_icon_music)
-                            .into(holder.file_icon);
+                case FileCategoryHelper.Music:
+                    holder.file_icon.setImageResource(R.drawable.category_file_icon_music);
+
                     break;
-                case ZIP:
-                    Glide.with(GeneralCategoryActivity.this).load(R.drawable.category_file_icon_zip).into(holder
-                            .file_icon);
+                case FileCategoryHelper.Zip:
+                    holder.file_icon.setImageResource(R.drawable.category_file_icon_zip);
+
                     break;
-                case APK:
-                    Glide.with(GeneralCategoryActivity.this).load(R.drawable.category_file_icon_apk).into(holder
-                            .file_icon);
+                case FileCategoryHelper.Apk:
+                    holder.file_icon.setImageResource(R.drawable.category_file_icon_apk);
+
                     break;
                 default:
                     break;

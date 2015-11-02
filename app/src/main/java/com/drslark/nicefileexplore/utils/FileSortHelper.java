@@ -4,12 +4,10 @@
 
 package com.drslark.nicefileexplore.utils;
 
-import java.util.Comparator;
-import java.util.HashMap;
-
-import com.drslark.nicefileexplore.model.FileInfo;
-
 import android.util.SparseArray;
+
+import java.io.File;
+import java.util.Comparator;
 
 public class FileSortHelper {
 
@@ -22,11 +20,10 @@ public class FileSortHelper {
     private int mSort;
 
 
-
     private boolean mFileFirst;
     private SparseArray<Comparator> mComparatorList = new SparseArray<>();
 
-  //  private HashMap<SortMethod, Comparator> mComparatorList = new HashMap<SortMethod, Comparator>();
+    //  private HashMap<SortMethod, Comparator> mComparatorList = new HashMap<SortMethod, Comparator>();
 
     public FileSortHelper() {
         mSort = NAME;
@@ -52,44 +49,44 @@ public class FileSortHelper {
         return mComparatorList.get(mSort);
     }
 
-    private abstract class FileComparator implements Comparator<FileInfo> {
+    private abstract class FileComparator implements Comparator<File> {
 
         @Override
-        public int compare(FileInfo object1, FileInfo object2) {
-            if (object1.isDir() == object2.isDir()) {
+        public int compare(File object1, File object2) {
+            if (object1.isDirectory() == object2.isDirectory()) {
                 return doCompare(object1, object2);
             }
 
             if (mFileFirst) {
                 // the files are listed before the dirs
-                return (object1.isDir() ? 1 : -1);
+                return (object1.isDirectory() ? 1 : -1);
             } else {
                 // the dir-s are listed before the files
-                return object1.isDir() ? -1 : 1;
+                return object1.isDirectory() ? -1 : 1;
             }
         }
 
-        protected abstract int doCompare(FileInfo object1, FileInfo object2);
+        protected abstract int doCompare(File object1, File object2);
     }
 
     private Comparator cmpName = new FileComparator() {
         @Override
-        public int doCompare(FileInfo object1, FileInfo object2) {
+        public int doCompare(File object1, File object2) {
             return object1.getName().compareToIgnoreCase(object2.getName());
         }
     };
 
     private Comparator cmpSize = new FileComparator() {
         @Override
-        public int doCompare(FileInfo object1, FileInfo object2) {
-            return longToCompareInt(object1.getFileSize() - object2.getFileSize());
+        public int doCompare(File object1, File object2) {
+            return longToCompareInt(object1.length() - object2.length());
         }
     };
 
     private Comparator cmpDate = new FileComparator() {
         @Override
-        public int doCompare(FileInfo object1, FileInfo object2) {
-            return longToCompareInt(object2.getModefiedDate() - object1.getModefiedDate());
+        public int doCompare(File object1, File object2) {
+            return longToCompareInt(object2.lastModified() - object1.lastModified());
         }
     };
 
@@ -99,7 +96,7 @@ public class FileSortHelper {
 
     private Comparator cmpType = new FileComparator() {
         @Override
-        public int doCompare(FileInfo object1, FileInfo object2) {
+        public int doCompare(File object1, File object2) {
             int result = Util.getExtFromFilename(object1.getName()).compareToIgnoreCase(
                     Util.getExtFromFilename(object2.getName()));
             if (result != 0)

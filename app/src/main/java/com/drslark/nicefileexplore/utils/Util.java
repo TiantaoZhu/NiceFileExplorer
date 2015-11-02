@@ -1,21 +1,12 @@
-/*
- * Copyright (C) 2015 Baidu, Inc. All Rights Reserved.
- */
-
 package com.drslark.nicefileexplore.utils;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.View;
 import android.widget.TextView;
 
@@ -23,14 +14,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-
-import com.drslark.nicefileexplore.model.FileInfo;
 
 public class Util {
     private static String ANDROID_SECURE = "/mnt/sdcard/.android_secure";
@@ -234,8 +221,8 @@ public class Util {
     }
 
     // does not include sd card folder
-    private static String[] SysFileDirs = new String[] {
-        "miren_browser/imagecaches"
+    private static String[] SysFileDirs = new String[]{
+            "miren_browser/imagecaches"
     };
 
 //    public static boolean shouldShowFile(String path) {

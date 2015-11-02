@@ -74,11 +74,11 @@ public class IntentBuilder {
 
         String mimeType = "*/*";
         for (FileInfo file : files) {
-            if (file.isDir())
+            if (file.isDir)
                 continue;
 
-            File fileIn = new File(file.getAbsolutePath());
-            mimeType = getMimeType(file.getName());
+            File fileIn = new File(file.absolutePath);
+            mimeType = getMimeType(file.name);
             Uri u = Uri.fromFile(fileIn);
             uris.add(u);
         }
