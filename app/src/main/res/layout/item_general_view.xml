@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:paddingBottom="2dp"
+                android:layout_height="40dp">
+    <ImageView
+            android:id="@+id/file_icon"
+
+            android:src="@drawable/file_icon_folder"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="3dp"
+            android:scaleType="fitCenter"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"/>
+    <LinearLayout
+            android:layout_alignTop="@+id/file_icon"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/file_icon"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="0dp"
+                  android:textColor="#111"
+                  android:textSize="12sp"
+                  android:text="123 "
+                  android:layout_weight="1.5"
+                  android:id="@+id/file_name"
+                />
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="0dp"
+                  android:textColor="#999"
+                  android:textSize="10sp"
+                  android:text="123"
+                  android:layout_weight="1"
+                  android:id="@+id/file_desc"
+                />
+    </LinearLayout>
+    <CheckBox android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentRight="true"
+              android:layout_centerVertical="true"
+              android:layout_marginRight="8dp"
+              android:id="@+id/file_check"
+              android:visibility="gone"
+            />
+
+</RelativeLayout>

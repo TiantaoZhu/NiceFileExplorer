@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.drslark.nicefileexplore.model.FileStoreData;
 import com.drslark.nicefileexplore.model.MediaStoreData;
 import com.drslark.nicefileexplore.utils.FileSortHelper;
 import com.drslark.nicefileexplore.utils.FilenameExtFilter;
@@ -278,6 +279,28 @@ public class FileCategoryHelper {
         }
 
         return false;
+    }
+
+    private static final String[] DOC_PROJECTION = {
+            FileColumns._ID, FileColumns.DATA, FileColumns.DATE_ADDED, FileColumns.DATE_MODIFIED, FileColumns.MIME_TYPE,
+            FileColumns.SIZE
+    };
+
+    public List<FileStoreData> queryDoc() {
+        Cursor cursor = query(Doc, FileSortHelper.DATE, DOC_PROJECTION);
+        LinkedList<FileStoreData> files = new LinkedList<>();
+        while (cursor.moveToNext()) {
+            if (cursor.getLong(5) == 0) {
+                continue;
+            }
+            Long id = cursor.getLong(0);
+            FileStoreData data = new FileStoreData(Uri.withAppendedPath(getContentUriByCategory(Doc),
+                    id.toString()), id,
+                    cursor.getString(1), cursor.getLong(2), cursor.getLong(3),
+                    cursor.getString(4), cursor.getLong(5));
+            files.add(data);
+        }
+        return files;
     }
 
     private static final String[] IMAGE_PROJECTION =

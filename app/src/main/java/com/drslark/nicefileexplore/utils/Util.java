@@ -394,6 +394,7 @@ public class Util {
             add("application/pdf");
             add("application/msword");
             add("application/vnd.ms-excel");
+            add("application/vnd.ms-powerpoint");
         }
     };
 

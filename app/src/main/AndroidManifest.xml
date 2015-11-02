@@ -32,6 +32,7 @@
         <activity android:name=".UserInfoActivity"/>
         <activity android:name=".MediaCategoryActivity"/>
         <activity android:name=".PhotoViewActivity"/>
+        <activity android:name=".GeneralCategoryActivity"/>
     </application>
 
 </manifest>

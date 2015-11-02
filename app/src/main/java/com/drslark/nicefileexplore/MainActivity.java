@@ -11,6 +11,11 @@ public class MainActivity extends TitleControlBaseActivity implements View.OnCli
         setContentView(R.layout.activity_main);
         findViewById(R.id.category_pic).setOnClickListener(this);
         findViewById(R.id.category_video).setOnClickListener(this);
+        findViewById(R.id.category_document).setOnClickListener(this);
+        findViewById(R.id.category_zip).setOnClickListener(this);
+        findViewById(R.id.category_apk).setOnClickListener(this);
+        findViewById(R.id.category_music).setOnClickListener(this);
+
     }
 
     @Override
@@ -18,6 +23,19 @@ public class MainActivity extends TitleControlBaseActivity implements View.OnCli
         switch (v.getId()) {
             case R.id.category_pic: MediaCategoryActivity.actionShow(this,MediaCategoryActivity.SHOW_PIC);break;
             case R.id.category_video: MediaCategoryActivity.actionShow(this,MediaCategoryActivity.SHOW_VIDEO);break;
+            case R.id.category_document:
+                GeneralCategoryActivity.actionShow(this, GeneralCategoryActivity.DOC);
+                break;
+            case R.id.category_zip:
+                GeneralCategoryActivity.actionShow(this, GeneralCategoryActivity.ZIP);
+                break;
+            case R.id.category_music:
+                GeneralCategoryActivity.actionShow(this, GeneralCategoryActivity.MUSIC);
+                break;
+            case R.id.category_apk:
+                GeneralCategoryActivity.actionShow(this, GeneralCategoryActivity.APK);
+                break;
+
 
         }
     }
