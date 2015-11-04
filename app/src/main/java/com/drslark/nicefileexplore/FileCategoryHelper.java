@@ -1,6 +1,17 @@
 
 package com.drslark.nicefileexplore;
 
+import java.io.FilenameFilter;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+
+import com.drslark.nicefileexplore.model.FileStoreData;
+import com.drslark.nicefileexplore.model.MediaStoreData;
+import com.drslark.nicefileexplore.utils.FileSortHelper;
+import com.drslark.nicefileexplore.utils.FilenameExtFilter;
+import com.drslark.nicefileexplore.utils.Util;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -13,21 +24,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.drslark.nicefileexplore.model.FileStoreData;
-import com.drslark.nicefileexplore.model.MediaStoreData;
-import com.drslark.nicefileexplore.utils.FileSortHelper;
-import com.drslark.nicefileexplore.utils.FilenameExtFilter;
-import com.drslark.nicefileexplore.utils.Util;
-
-import java.io.FilenameFilter;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-
 public class FileCategoryHelper {
 
-    private static final String TAG = "intHelper";
-    private static final int PAGE_SIZE = 50; 
     public static final int All = 8000;
     public static final int Music = 8001;
     public static final int Video = 8002;
@@ -39,18 +37,42 @@ public class FileCategoryHelper {
     public static final int BlueTooth = 8008;
     public static final int Favorite = 8009;
     public static final int Other = 8010;
-
-
+    private static final String TAG = "intHelper";
+    private static final int PAGE_SIZE = 50;
+    private static final String[] FILE_PROJECTION = {
+            FileColumns._ID, FileColumns.DATA, FileColumns.DATE_ADDED, FileColumns.DATE_MODIFIED, FileColumns.MIME_TYPE,
+            FileColumns.SIZE
+    };
+    private static final String[] IMAGE_PROJECTION =
+            new String[]{
+                    MediaStore.Images.ImageColumns._ID,
+                    MediaStore.Files.FileColumns.DATA,
+                    MediaStore.Images.ImageColumns.DATE_TAKEN,
+                    MediaStore.Images.ImageColumns.DATE_MODIFIED,
+                    MediaStore.Images.ImageColumns.MIME_TYPE,
+                    MediaStore.Images.ImageColumns.ORIENTATION,
+            };
+    private static final String[] VIDEO_PROJECTION =
+            new String[]{
+                    MediaStore.Video.VideoColumns._ID,
+                    MediaStore.Files.FileColumns.DATA,
+                    MediaStore.Video.VideoColumns.DATE_TAKEN,
+                    MediaStore.Video.VideoColumns.DATE_MODIFIED,
+                    MediaStore.Video.VideoColumns.MIME_TYPE,
+                    "0 AS " + MediaStore.Images.ImageColumns.ORIENTATION,
+            };
+    public static SparseArray<FilenameExtFilter> filters
+            = new SparseArray<>();
+    public static SparseArray<Integer> categoryNames
+            = new SparseArray<>();
+    public static int[] sCategories = new int[]{
+            Music, Video, Picture,
+            Doc, Zip, Apk, BlueTooth
+    };
     private static String APK_EXT = "apk";
     private static String[] ZIP_EXTS = new String[]{
             "zip", "rar"
     };
-
-    public static SparseArray<FilenameExtFilter> filters
-            = new SparseArray<>();
-
-    public static SparseArray<Integer> categoryNames
-            = new SparseArray<>();
 
     static {
         categoryNames.put(All, R.string.category_all);
@@ -64,18 +86,39 @@ public class FileCategoryHelper {
         categoryNames.put(Favorite, R.string.category_fav);
     }
 
-    public static int[] sCategories = new int[]{
-            Music, Video, Picture,
-            Doc, Zip, Apk, BlueTooth
-    };
-
     private int mCategory;
-
     private Context mContext;
+    private SparseArray<CategoryInfo> mCategoryInfo = new SparseArray<>();
 
     public FileCategoryHelper(Context context) {
         mContext = context;
         mCategory = All;
+    }
+
+    public static  <T extends List<Element>, Element> List<Element> mergeSort(T first, T second, Comparator<Element>
+            comparator) {
+        List<Element> result = new LinkedList<>();
+        Log.d(TAG, "first Size:" + first.size());
+        Log.d(TAG, "second Size:" + second.size());
+        int i = 0;
+        int j = 0;
+        while (i < first.size() && j < second.size()) {
+            if (comparator.compare(first.get(i), second.get(j)) < 0) {
+                result.add(first.get(i));
+                i++;
+            } else {
+                result.add(second.get(j));
+                j++;
+            }
+        }
+        if (i < first.size()) {
+            result.addAll(first.subList(i, first.size()));
+        }
+        if (j < second.size()) {
+            result.addAll(second.subList(j, second.size()));
+        }
+        return result;
+
     }
 
     public int getCurCategory() {
@@ -103,8 +146,6 @@ public class FileCategoryHelper {
         return filters.get(mCategory);
     }
 
-    private SparseArray<CategoryInfo> mCategoryInfo = new SparseArray<>();
-
     public SparseArray<CategoryInfo> getCategoryInfos() {
         return mCategoryInfo;
     }
@@ -117,12 +158,6 @@ public class FileCategoryHelper {
             mCategoryInfo.put(fc, info);
             return info;
         }
-    }
-
-    public class CategoryInfo {
-        public long count;
-
-        public long size;
     }
 
     private void setCategoryInfo(int fc, long count, long size) {
@@ -138,7 +173,6 @@ public class FileCategoryHelper {
     private String buildDocSelection(String mimeType) {
         return "(" + FileColumns.MIME_TYPE + "=='" + mimeType + "')";
     }
-
 
     private String buildDocSelection() {
         StringBuilder selection = new StringBuilder();
@@ -286,31 +320,6 @@ public class FileCategoryHelper {
         return false;
     }
 
-    private static final String[] FILE_PROJECTION = {
-            FileColumns._ID, FileColumns.DATA, FileColumns.DATE_ADDED, FileColumns.DATE_MODIFIED, FileColumns.MIME_TYPE,
-            FileColumns.SIZE
-    };
-
-    private static final String[] IMAGE_PROJECTION =
-            new String[]{
-                    MediaStore.Images.ImageColumns._ID,
-                    MediaStore.Files.FileColumns.DATA,
-                    MediaStore.Images.ImageColumns.DATE_TAKEN,
-                    MediaStore.Images.ImageColumns.DATE_MODIFIED,
-                    MediaStore.Images.ImageColumns.MIME_TYPE,
-                    MediaStore.Images.ImageColumns.ORIENTATION,
-            };
-
-    private static final String[] VIDEO_PROJECTION =
-            new String[]{
-                    MediaStore.Video.VideoColumns._ID,
-                    MediaStore.Files.FileColumns.DATA,
-                    MediaStore.Video.VideoColumns.DATE_TAKEN,
-                    MediaStore.Video.VideoColumns.DATE_MODIFIED,
-                    MediaStore.Video.VideoColumns.MIME_TYPE,
-                    "0 AS " + MediaStore.Images.ImageColumns.ORIENTATION,
-            };
-
     public List<MediaStoreData> queryImages() {
         return mergeSort(
                 query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION,
@@ -371,30 +380,10 @@ public class FileCategoryHelper {
         return data;
     }
 
-    public static  <T extends List<Element>, Element> List<Element> mergeSort(T first, T second, Comparator<Element>
-            comparator) {
-        List<Element> result = new LinkedList<>();
-        Log.d(TAG, "first Size:" + first.size());
-        Log.d(TAG, "second Size:" + second.size());
-        int i = 0;
-        int j = 0;
-        while (i < first.size() && j < second.size()) {
-            if (comparator.compare(first.get(i), second.get(j)) < 0) {
-                result.add(first.get(i));
-                i++;
-            } else {
-                result.add(second.get(j));
-                j++;
-            }
-        }
-        if (i < first.size()) {
-            result.addAll(first.subList(i, first.size()));
-        }
-        if (j < second.size()) {
-            result.addAll(second.subList(j, second.size()));
-        }
-        return result;
+    public class CategoryInfo {
+        public long count;
 
+        public long size;
     }
 
 

@@ -34,7 +34,6 @@ dependencies {
     compile files('libs/rxjava-1.0.14.jar')
     compile 'com.commit451:PhotoView:1.2.4'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'org.apache.directory.studio:org.apache.commons.lang:2.6'
 }
 buildscript {
     ext.kotlin_version = '1.0.0-beta-1103'

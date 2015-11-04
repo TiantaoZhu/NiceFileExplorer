@@ -1,5 +1,14 @@
 package com.drslark.nicefileexplore.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.HashSet;
+
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -10,53 +19,25 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.HashSet;
-
 public class Util {
-    private static String ANDROID_SECURE = "/mnt/sdcard/.android_secure";
-
     private static final String LOG_TAG = "Util";
-
-    public static boolean isSDCardReady() {
-        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
-    }
-
-    // if path1 contains path2
-    public static boolean containsPath(String path1, String path2) {
-        String path = path2;
-        while (path != null) {
-            if (path.equalsIgnoreCase(path1))
-                return true;
-
-            if (path.equals("/"))
-                break;
-            path = new File(path).getParent();
+    public static HashSet<String> sDocMimeTypesSet = new HashSet<String>() {
+        {
+            add("text/plain");
+            add("application/pdf");
+            add("application/msword");
+            add("application/vnd.ms-excel");
+            add("application/vnd.ms-powerpoint");
         }
-
-        return false;
-    }
-
-    public static String makePath(String path1, String path2) {
-        if (path1.endsWith(File.separator))
-            return path1 + path2;
-
-        return path1 + File.separator + path2;
-    }
-
-    public static String getSdDirectory() {
-        return Environment.getExternalStorageDirectory().getPath();
-    }
-
-    public static boolean isNormalFile(String fullName) {
-        return !fullName.equals(ANDROID_SECURE);
-    }
+    };
+    public static String sZipFileMimeType = "application/zip";
+    public static int CATEGORY_TAB_INDEX = 0;
+    public static int SDCARD_TAB_INDEX = 1;
+    private static String ANDROID_SECURE = "/mnt/sdcard/.android_secure";
+    // does not include sd card folder
+    private static String[] SysFileDirs = new String[] {
+            "miren_browser/imagecaches"
+    };
 
 //    public static FileInfo GetFileInfo(String filePath) {
 //        File lFile = new File(filePath);
@@ -111,6 +92,43 @@ public class Util {
 //        return lFileInfo;
 //    }
 
+    public static boolean isSDCardReady() {
+        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+    }
+
+    // if path1 contains path2
+    public static boolean containsPath(String path1, String path2) {
+        String path = path2;
+        while (path != null) {
+            if (path.equalsIgnoreCase(path1)) {
+                return true;
+            }
+
+            if (path.equals("/")) {
+                break;
+            }
+            path = new File(path).getParent();
+        }
+
+        return false;
+    }
+
+    public static String makePath(String path1, String path2) {
+        if (path1.endsWith(File.separator)) {
+            return path1 + path2;
+        }
+
+        return path1 + File.separator + path2;
+    }
+
+    public static String getSdDirectory() {
+        return Environment.getExternalStorageDirectory().getPath();
+    }
+
+    public static boolean isNormalFile(String fullName) {
+        return !fullName.equals(ANDROID_SECURE);
+    }
+
     public static Drawable getApkIcon(Context context, String apkPath) {
         PackageManager pm = context.getPackageManager();
         PackageInfo info = pm.getPackageArchiveInfo(apkPath,
@@ -128,6 +146,19 @@ public class Util {
         return null;
     }
 
+    public static ApplicationInfo getAppInfo(Context context, String apkPath) {
+        PackageManager pm = context.getPackageManager();
+        PackageInfo info = pm.getPackageArchiveInfo(apkPath,
+                PackageManager.GET_ACTIVITIES);
+        if (info != null) {
+            ApplicationInfo appInfo = info.applicationInfo;
+            appInfo.sourceDir = apkPath;
+            appInfo.publicSourceDir = apkPath;
+            return appInfo;
+        }
+        return null;
+    }
+
     public static String getExtFromFilename(String filename) {
         int dotPosition = filename.lastIndexOf('.');
         if (dotPosition != -1) {
@@ -135,6 +166,40 @@ public class Util {
         }
         return "";
     }
+
+//    public static boolean shouldShowFile(String path) {
+//        return shouldShowFile(new File(path));
+//    }
+
+//    public static boolean shouldShowFile(File file) {
+//        boolean show = Settings.instance().getShowDotAndHiddenFiles();
+//        if (show)
+//            return true;
+//
+//        if (file.isHidden())
+//            return false;
+//
+//        if (file.getName().startsWith("."))
+//            return false;
+//
+//        String sdFolder = getSdDirectory();
+//        for (String s : SysFileDirs) {
+//            if (file.getPath().startsWith(makePath(sdFolder, s)))
+//                return false;
+//        }
+//
+//        return true;
+//    }
+
+//    public static ArrayList<FavoriteItem> getDefaultFavorites(Context context) {
+//        ArrayList<FavoriteItem> list = new ArrayList<FavoriteItem>();
+//        list.add(new FavoriteItem(context.getString(R.string.favorite_photo), makePath(getSdDirectory(), "DCIM/Camera")));
+//        list.add(new FavoriteItem(context.getString(R.string.favorite_sdcard), getSdDirectory()));
+//        //list.add(new FavoriteItem(context.getString(R.string.favorite_root), getSdDirectory()));
+//        list.add(new FavoriteItem(context.getString(R.string.favorite_screen_cap), makePath(getSdDirectory(), "MIUI/screen_cap")));
+//        list.add(new FavoriteItem(context.getString(R.string.favorite_ringtone), makePath(getSdDirectory(), "MIUI/ringtone")));
+//        return list;
+//    }
 
     public static String getNameFromFilename(String filename) {
         int dotPosition = filename.lastIndexOf('.');
@@ -173,8 +238,9 @@ public class Util {
             fi = new FileInputStream(file);
             File destPlace = new File(dest);
             if (!destPlace.exists()) {
-                if (!destPlace.mkdirs())
+                if (!destPlace.mkdirs()) {
                     return null;
+                }
             }
 
             String destPath = Util.makePath(dest, file.getName());
@@ -187,8 +253,9 @@ public class Util {
                 destFile = new File(destPath);
             }
 
-            if (!destFile.createNewFile())
+            if (!destFile.createNewFile()) {
                 return null;
+            }
 
             fo = new FileOutputStream(destFile);
             int count = 102400;
@@ -208,10 +275,12 @@ public class Util {
             Log.e(LOG_TAG, "copyFile: " + e.toString());
         } finally {
             try {
-                if (fi != null)
+                if (fi != null) {
                     fi.close();
-                if (fo != null)
+                }
+                if (fo != null) {
                     fo.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -219,45 +288,6 @@ public class Util {
 
         return null;
     }
-
-    // does not include sd card folder
-    private static String[] SysFileDirs = new String[]{
-            "miren_browser/imagecaches"
-    };
-
-//    public static boolean shouldShowFile(String path) {
-//        return shouldShowFile(new File(path));
-//    }
-
-//    public static boolean shouldShowFile(File file) {
-//        boolean show = Settings.instance().getShowDotAndHiddenFiles();
-//        if (show)
-//            return true;
-//
-//        if (file.isHidden())
-//            return false;
-//
-//        if (file.getName().startsWith("."))
-//            return false;
-//
-//        String sdFolder = getSdDirectory();
-//        for (String s : SysFileDirs) {
-//            if (file.getPath().startsWith(makePath(sdFolder, s)))
-//                return false;
-//        }
-//
-//        return true;
-//    }
-
-//    public static ArrayList<FavoriteItem> getDefaultFavorites(Context context) {
-//        ArrayList<FavoriteItem> list = new ArrayList<FavoriteItem>();
-//        list.add(new FavoriteItem(context.getString(R.string.favorite_photo), makePath(getSdDirectory(), "DCIM/Camera")));
-//        list.add(new FavoriteItem(context.getString(R.string.favorite_sdcard), getSdDirectory()));
-//        //list.add(new FavoriteItem(context.getString(R.string.favorite_root), getSdDirectory()));
-//        list.add(new FavoriteItem(context.getString(R.string.favorite_screen_cap), makePath(getSdDirectory(), "MIUI/screen_cap")));
-//        list.add(new FavoriteItem(context.getString(R.string.favorite_ringtone), makePath(getSdDirectory(), "MIUI/ringtone")));
-//        return list;
-//    }
 
     public static boolean setText(View view, int id, String text) {
         TextView textView = (TextView) view.findViewById(id);
@@ -270,17 +300,41 @@ public class Util {
 
     public static boolean setText(View view, int id, int text) {
         TextView textView = (TextView) view.findViewById(id);
-        if (textView == null)
+        if (textView == null) {
             return false;
+        }
 
         textView.setText(text);
         return true;
     }
 
+//    public static void showNotification(Context context, Intent intent, String title, String body, int drawableId) {
+//        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//        Notification notification = new Notification(drawableId, body, System.currentTimeMillis());
+//        notification.flags = Notification.FLAG_AUTO_CANCEL;
+//        notification.defaults = Notification.DEFAULT_SOUND;
+//        if (intent == null) {
+//            // FIXEME: category tab is disabled
+//            intent = new Intent(context, FileViewActivity.class);
+//        }
+//        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+//        notification.setLatestEventInfo(context, title, body, contentIntent);
+//        manager.notify(drawableId, notification);
+//    }
+
     // comma separated number
     public static String convertNumber(long number) {
         return String.format("%,d", number);
     }
+
+//    public static void updateActionModeTitle(ActionMode mode, Context context, int selectedNum) {
+//        if (mode != null) {
+//            mode.setTitle(context.getString(R.string.multi_select_title,selectedNum));
+//            if(selectedNum == 0){
+//                mode.finish();
+//            }
+//        }
+//    }
 
     // storage, G M K B
     public static String convertStorage(long size) {
@@ -296,14 +350,9 @@ public class Util {
         } else if (size >= kb) {
             float f = (float) size / kb;
             return String.format(f > 100 ? "%.0f KB" : "%.1f KB", f);
-        } else
+        } else {
             return String.format("%d B", size);
-    }
-
-    public static class SDCardInfo {
-        public long total;
-
-        public long free;
+        }
     }
 
     public static SDCardInfo getSDCardInfo() {
@@ -343,20 +392,6 @@ public class Util {
         return null;
     }
 
-//    public static void showNotification(Context context, Intent intent, String title, String body, int drawableId) {
-//        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//        Notification notification = new Notification(drawableId, body, System.currentTimeMillis());
-//        notification.flags = Notification.FLAG_AUTO_CANCEL;
-//        notification.defaults = Notification.DEFAULT_SOUND;
-//        if (intent == null) {
-//            // FIXEME: category tab is disabled
-//            intent = new Intent(context, FileViewActivity.class);
-//        }
-//        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-//        notification.setLatestEventInfo(context, title, body, contentIntent);
-//        manager.notify(drawableId, notification);
-//    }
-
     public static String formatDateString(Context context, long time) {
         DateFormat dateFormat = android.text.format.DateFormat
                 .getDateFormat(context);
@@ -366,27 +401,9 @@ public class Util {
         return dateFormat.format(date) + " " + timeFormat.format(date);
     }
 
-//    public static void updateActionModeTitle(ActionMode mode, Context context, int selectedNum) {
-//        if (mode != null) {
-//            mode.setTitle(context.getString(R.string.multi_select_title,selectedNum));
-//            if(selectedNum == 0){
-//                mode.finish();
-//            }
-//        }
-//    }
+    public static class SDCardInfo {
+        public long total;
 
-    public static HashSet<String> sDocMimeTypesSet = new HashSet<String>() {
-        {
-            add("text/plain");
-            add("application/pdf");
-            add("application/msword");
-            add("application/vnd.ms-excel");
-            add("application/vnd.ms-powerpoint");
-        }
-    };
-
-    public static String sZipFileMimeType = "application/zip";
-
-    public static int CATEGORY_TAB_INDEX = 0;
-    public static int SDCARD_TAB_INDEX = 1;
+        public long free;
+    }
 }

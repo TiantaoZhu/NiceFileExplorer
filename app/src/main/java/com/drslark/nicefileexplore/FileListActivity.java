@@ -1,29 +1,31 @@
 package com.drslark.nicefileexplore;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.drslark.nicefileexplore.utils.FileSortHelper;
+import com.drslark.nicefileexplore.widget.GeneralViewHolder;
+
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.drslark.nicefileexplore.utils.FileSortHelper;
-
-import org.apache.commons.lang.StringUtils;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by 123 on 2015/11/1.
  */
 public class FileListActivity extends TitleControlBaseActivity {
     private static final String SDCRADPATH = Environment.getExternalStorageDirectory().getAbsolutePath();
-    private static final String LASTSTAYPATH = "LASTSTAYPAT";
+    private static final String SHOWPATH = "LASTSTAYPAT";
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private List<File> currentFiles;
@@ -31,13 +33,19 @@ public class FileListActivity extends TitleControlBaseActivity {
     private File currentFile;
     private FileSortHelper mFileSortHelper;
 
+    public static void actionShow(Context context, String directory) {
+        Intent intent = new Intent(context, FileListActivity.class);
+        intent.putExtra(SHOWPATH, directory);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_file_list);
         mRecyclerView = (RecyclerView) findViewById(R.id.file_list);
         // 初始化数据
-        currentFilePath = getIntent().getStringExtra(LASTSTAYPATH);
+        currentFilePath = getIntent().getStringExtra(SHOWPATH);
         if (StringUtils.isBlank(currentFilePath)) {
             currentFilePath = SDCRADPATH;
         }
@@ -46,6 +54,12 @@ public class FileListActivity extends TitleControlBaseActivity {
         mRecyclerView.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         );
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                outRect.set(0, 0, 0, 1);
+            }
+        });
         mFileSortHelper = new FileSortHelper();
         mFileSortHelper.setSortMethog(FileSortHelper.TYPE);
         refreshListView();
@@ -58,15 +72,15 @@ public class FileListActivity extends TitleControlBaseActivity {
         mAdapter.notifyDataSetChanged();
     }
 
-    private class FileListAdapter extends RecyclerView.Adapter {
+    private class FileListAdapter extends RecyclerView.Adapter<GeneralViewHolder> {
 
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public GeneralViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return null;
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(GeneralViewHolder holder, int position) {
 
         }
 
@@ -76,19 +90,7 @@ public class FileListActivity extends TitleControlBaseActivity {
         }
     }
 
-    private class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView fileIcon;
-        TextView fileName;
-        TextView fileInfo; // 子文件数量 或者 文件大小 修改时间等
 
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            fileIcon = (ImageView) itemView.findViewById(R.id.file_icon);
-            fileName = (TextView) itemView.findViewById(R.id.file_name);
-            fileInfo = (TextView) itemView.findViewById(R.id.file_info);
-        }
-    }
 
 
 }

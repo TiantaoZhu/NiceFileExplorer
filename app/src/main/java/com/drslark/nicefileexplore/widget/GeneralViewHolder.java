@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -16,6 +17,7 @@ public class GeneralViewHolder extends RecyclerView.ViewHolder {
     public TextView file_name;
     public TextView file_desc;
     public CheckBox file_check;
+    public RelativeLayout file_container;
 
     public GeneralViewHolder(View itemView) {
         super(itemView);
@@ -23,5 +25,6 @@ public class GeneralViewHolder extends RecyclerView.ViewHolder {
         file_desc = (TextView) itemView.findViewById(R.id.file_desc);
         file_name = (TextView) itemView.findViewById(R.id.file_name);
         file_icon = (ImageView) itemView.findViewById(R.id.file_icon);
+        file_container = (RelativeLayout) itemView.findViewById(R.id.general_item_view);
     }
 }
