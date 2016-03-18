@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 23
@@ -8,7 +7,7 @@ android {
     defaultConfig {
         applicationId "com.drslark.nicefileexplore"
         minSdkVersion 19
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }
@@ -17,9 +16,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
     }
 }
 
@@ -33,17 +29,8 @@ dependencies {
     compile files('libs/litepal-1.2.1-src.jar')
     compile files('libs/rxjava-1.0.14.jar')
     compile 'com.commit451:PhotoView:1.2.4'
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
-buildscript {
-    ext.kotlin_version = '1.0.0-beta-1103'
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
+
 repositories {
     mavenCentral()
 }
